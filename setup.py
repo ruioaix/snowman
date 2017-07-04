@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
 setup(
-    name = 'xqportfolio',
-    version = '0.1.0',
+    name = 'snowman',
+    version = '0.0.1',
     description = 'An interactive system for portfolios on xueqiu.com',
-    url = 'https://github.com/RuiOAIX/XueQiuPortfolio',
+    url = 'https://github.com/ruioaix/snowman',
     author = 'Rui OAIX',
     author_email = 'rui.oaix@gmail.com',
     license = 'MIT',
@@ -22,6 +22,6 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
-    packages = ['xqportfolio'],
+    packages = ['snowman'],
     install_requires = ['requests'],
 )
