@@ -1,19 +1,20 @@
 """
 """
 import re
+import copy
 import json
 import datetime
 
 import requests
 
-from . import urls
+from .urls import urls
 from .headers import default_headers
 
 class Info(object):
 
     def __init__(self, symbol):
         self.symbol = symbol
-        self.info = None
+        self._info = None
 
     def _update(self):
         with requests.Session() as s:
@@ -27,28 +28,29 @@ class Info(object):
                 data = json.loads(cubeinfo.group())
             except json.decoder.JSONDecodeError:
                 raise Exception('Json loads error')
-            self.info = data
+            self._info = data
 
     def all(self, update = False):
-        if update or not self.info: 
+        if update or not self._info: 
             self._update()
-        return self.info
+        return copy.deepcopy(self._info)
 
     def basic(self, update = False):
-        if update or not self.info:
+        if update or not self._info:
             self._update()
         res = {'symbol': self.symbol}
-        res['name'] = self.info['name']
-        res['market'] = self.info['market']
-        res['status'] = 'active' if self.info['active_flag'] else 'closed'
-        res['created'] = self.info['created_date']
-        updated_at = datetime.datetime.fromtimestamp(self.info['updated_at'] // 1000)
+        res['name'] = self._info['name']
+        res['market'] = self._info['market']
+        res['status'] = 'active' if self._info['active_flag'] else 'closed'
+        res['created'] = self._info['created_date']
+        updated_at = datetime.datetime.fromtimestamp(self._info['updated_at'] // 1000)
         res['updated_at'] = updated_at.strftime('%Y-%m-%d %H:%M:%S')
-        res['net_value'] = self.info['net_value']
-        res['follower_count'] = self.info['follower_count']
+        res['net_value'] = self._info['net_value']
+        res['follower_count'] = self._info['follower_count']
         return res
 
     def __getattr__(self, name):
-        if name in self.info:
-            return self.info[name]
+        if name in self._info:
+            return self._info[name]
         raise AttributeError("'{}' object has no attribut '{}'".format(Info.__name__, name))
+
