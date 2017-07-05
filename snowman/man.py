@@ -4,6 +4,7 @@ from .session import Session
 from .info import Info
 from .profit import Profit
 from .analysis import Analysis
+from .history import History
 
 class Snowman(object):
 
@@ -48,3 +49,7 @@ class Snowman(object):
     def get_analysis(self, symbol):
         a = Analysis(symbol, self.s)
         return a.all()
+
+    def get_history(self, symbol, history_num = 0, origin = False):
+        h = History(symbol, self.s)
+        return h.get(history_num, origin)

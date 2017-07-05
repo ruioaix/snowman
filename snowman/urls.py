@@ -14,6 +14,7 @@ class Urls(object):
         'analysis_turnover': 'https://xueqiu.com/cubes/analyst/histo/stat.json?cube_symbol={}&type=turnover',
         'analysis_volatility': 'https://xueqiu.com/cubes/analyst/histo/stat.json?cube_symbol={}&type=volatility',
         'analysis_top_stocks': 'https://xueqiu.com/cubes/analyst/stock.json?cube_symbol={}&page={}&count={}&type=gain',
+        'history': 'https://xueqiu.com/cubes/rebalancing/history.json?cube_symbol={}&count={}&page={}',
     }
 
     def __getattr__(self, name):
@@ -44,5 +45,8 @@ class Urls(object):
 
     def analysis_top_stocks(self, symbol, page = 1, count = 5):
         return self._urls['analysis_top_stocks'].format(symbol, page, count)
+
+    def history(self, symbol, page = 1, count = 20):
+        return self._urls['history'].format(symbol, count, page)
 
 urls = Urls()
