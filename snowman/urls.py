@@ -5,6 +5,7 @@ class Urls(object):
 
     _urls = {
         'base': 'https://xueqiu.com',
+        'login': 'https://xueqiu.com/user/login',
         'info': 'https://xueqiu.com/P/{}',
         'profit': 'https://xueqiu.com/cubes/nav_daily/all.json?cube_symbol={}',
         'analysis_benefit': 'https://xueqiu.com/cubes/analyst/histo/benefit.json?cube_symbol={}',
