@@ -29,9 +29,8 @@ class Analysis(object):
         self.top_stocks_origin = None
         self.top_stocks_simple = None
 
-    def _update(self, _url, **kwargs):
+    def _update(self, url):
         self.s.touch()
-        url = _url(self.symbol, **kwargs)
         log.debug('request ' + url)
         resp = self.s.get(url)
         if resp.status_code != 200:
@@ -42,91 +41,87 @@ class Analysis(object):
             raise JsonLoadError('"{}..."'.format(resp.text[:50]))
         return data
 
+    def _save(self, origin_data, simple_data, url, origin_to_simple, origin = False, update = False):
+        if update or origin_data is None:
+            origin_data = self._update(url)
+            simple_data = None
+        if origin : return origin_data, simple_data
+        if simple_data is None:
+            if origin_data == {'success': False} or origin_data == []:
+                simple_data = origin_data
+            else:
+                try:
+                    simple_data = origin_to_simple(origin_data)
+                except KeyError as e:
+                    raise AnalysisContentError(str(e))
+        return origin_data, simple_data
+    
     def benefit(self, origin = False, update = False):
-        if update or self.benefit_origin is None:
-            self.benefit_origin = self._update(urls.analysis_benefit)
-            self.benefit_simple = None
-        if origin:
-            return self.benefit_origin
-        if self.benefit_simple is None:
-            try: 
-                self.benefit_simple = [(int(re.sub('-', '', month['date'])), month['value']) for month in self.benefit_origin[0]['profit_list']]
-            except KeyError as e:
-                raise AnalysisContentError(str(e))
-        return self.benefit_simple
+        origin_to_simple = lambda origin_data: [(int(re.sub('-', '', month['date'])), month['value']) 
+                                           for month in origin_data[0]['profit_list']]
+        self.benefit_origin, self.benefit_simple = self._save(self.benefit_origin, 
+                                         self.benefit_simple,
+                                         urls.analysis_benefit(self.symbol),
+                                         origin_to_simple,
+                                         origin = origin,
+                                         update = update)
+        return self.benefit_origin if origin else self.benefit_simple
 
     def max_draw(self, origin = False, update = False):
-        if update or self.max_draw_origin is None:
-            self.max_draw_origin = self._update(urls.analysis_max_draw)
-            self.max_draw_simple = None
-        if origin:
-            return self.max_draw_origin
-        if self.max_draw_simple is None:
-            try:
-                self.max_draw_simple = {}
-                self.max_draw_simple['begin_date'] = self.max_draw_origin['begin_date']
-                self.max_draw_simple['end_date'] = self.max_draw_origin['end_date']
-                self.max_draw_simple['value'] = self.max_draw_origin['max_draw']
-            except KeyError as e:
-                raise AnalysisContentError(str(e))
-        return self.max_draw_simple
+        def origin_to_simple(origin_data):
+            simple_data = {}
+            simple_data['begin_date'] = origin_data['begin_date']
+            simple_data['end_date'] = origin_data['end_date']
+            simple_data['value'] = origin_data['max_draw']
+            return simple_data
+        self.max_draw_origin, self.max_draw_simple = self._save(self.max_draw_origin,
+                                                                self.max_draw_simple,
+                                                                urls.analysis_max_draw(self.symbol),
+                                                                origin_to_simple,
+                                                                origin = origin,
+                                                                update = update)
+        return self.max_draw_origin if origin else self.max_draw_simple
 
     def turnover(self, origin = False, update = False):
-        if update or self.turnover_origin is None:
-            self.turnover_origin = self._update(urls.analysis_turnover)
-            self.turnover_simple = None
-        if origin:
-            return self.turnover_origin
-        if self.turnover_simple is None:
-            try:
-                self.turnover_simple = self.turnover_origin['values'][0]['value']
-            except KeyError as e:
-                raise AnalysisContentError(str(e))
-        return self.turnover_simple
+        self.turnover_origin, self.turnover_simple = self._save(self.turnover_origin,
+                                                                self.turnover_simple,
+                                                                urls.analysis_turnover(self.symbol),
+                                                                lambda origin_data: origin_data['values'][0]['value'],
+                                                                origin = origin,
+                                                                update = update)
+        return self.turnover_origin if origin else self.turnover_simple
 
     def liquidity(self, origin = False, update = False):
-        if update or self.liquidity_origin is None:
-            self.liquidity_origin = self._update(urls.analysis_liquidity)
-            self.liquidity_simple = None
-        if origin:
-            return self.liquidity_origin
-        if self.liquidity_simple is None:
-            try: 
-                self.liquidity_simple = self.liquidity_origin['values'][0]['value']
-            except KeyError as e:
-                raise AnalysisContentError(str(e))
-        return self.liquidity_simple
+        self.liquidity_origin, self.liquidity_simple = self._save(self.liquidity_origin,
+                                                                  self.liquidity_simple,
+                                                                  urls.analysis_liquidity(self.symbol),
+                                                                  lambda origin_data: origin_data['values'][0]['value'],
+                                                                  origin = origin,
+                                                                  update = update)
+        return self.liquidity_origin if origin else self.liquidity_simple
 
     def volatility(self, origin = False, update = False):
-        if update or self.volatility_origin is None:
-            self.volatility_origin = self._update(urls.analysis_volatility)
-            self.volatility_simple = None
-        if origin:
-            return self.volatility_origin
-        if self.volatility_simple is None:
-            try:
-                self.volatility_simple = self.volatility_origin['volatility_rate']
-            except KeyError as e:
-                raise AnalysisContentError(str(e))
-        return self.volatility_simple
+        self.volatility_origin, self.volatility_simple = self._save(self.volatility_origin,
+                                                                    self.volatility_simple,
+                                                                    urls.analysis_volatility(self.symbol),
+                                                                    lambda origin_data: origin_data['volatility_rate'],
+                                                                    origin = origin,
+                                                                    update = update)
+        return self.volatility_origin if origin else self.volatility_simple
 
     def top_stocks(self, page = 1, count = 5, origin = False, update = False):
-        if update or self.top_stocks_origin is None:
-            self.top_stocks_origin = self._update(urls.analysis_top_stocks, page = page, count = count)
-            self.top_stocks_simple = None
-        if origin:
-            return self.top_stocks_origin
-        if self.top_stocks_simple is None:
-            try:
-                self.top_stocks_simple = [{
-                    'symbol': st['stock_symbol'], 
-                    'name': st['stock_name'], 
-                    'benefit': st['stock_benefit'], 
-                    'holding_duration': st['holding_duration']} 
-                                          for st in self.top_stocks_origin['stock_list']]
-            except KeyError as e:
-                raise AnalysisContentError(str(e))
-        return self.top_stocks_simple
+        origin_to_simple = lambda origin_data: [{'symbol': st['stock_symbol'], 
+                                                 'name': st['stock_name'], 
+                                                 'benefit': st['stock_benefit'], 
+                                                 'holding_duration': st['holding_duration']} 
+                                                for st in origin_data['stock_list']]
+        self.top_stocks_origin, self.top_stocks_simple = self._save(self.top_stocks_origin,
+                                                                    self.top_stocks_simple,
+                                                                    urls.analysis_top_stocks(self.symbol, page = page, count = count),
+                                                                    origin_to_simple,
+                                                                    origin = origin,
+                                                                    update = update)
+        return self.top_stocks_origin if origin else self.top_stocks_simple 
 
     def all(self, origin):
         return {'benefit': self.benefit(origin = origin),

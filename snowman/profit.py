@@ -43,5 +43,5 @@ class Profit(object):
             except KeyError as e:
                 raise ProfitContentError(str(e))
         if days:
-            return self._simple[-int(days):]
+            return self._simple[-days:]
         return self._simple

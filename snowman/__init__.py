@@ -31,7 +31,9 @@ def parse_arguments():
     parser.add_argument('-O', '--origin', action = 'store_true', 
                         help = 'return the origin content from xueqiu instead of the simple version.')
 
-    parser.add_argument('-f', '--ofile', help = 'don\'t reuse the cache, fetch latest data from xueqiu.com.')
+    parser.add_argument('-f', '--ofile', help = 'save the result data into specified file.')
+
+    parser.add_argument('-P', '--params', nargs = '+', help = 'parameters for actions.')
 
     return parser.parse_args()
 
@@ -50,7 +52,23 @@ def main():
         log.info('Snowman doesn\'t know what is "{}".'.format(args.action))
         return
     log.info('Snowman is on.') 
-    res = get(args.symbol, origin = args.origin)
+    if get == man.get_profit:
+        days = 0
+        if args.params and args.params[0].isdigit():
+            days = int(args.params[0])
+        res = get(args.symbol, days = days, origin = args.origin)
+    elif get == man.get_analysis_top_stocks:
+        page = 1
+        count = 5
+        if args.params and args.params[0].isdigit():
+            if len(args.params) == 1:
+                count = int(args.params[0])
+            elif args.params[1].isdigit():
+                page = int(args.params[0])
+                count = int(args.params[1])
+        res = get(args.symbol, page = page, count = count, origin = args.origin)
+    else:
+        res = get(args.symbol, origin = args.origin)
     if args.ofile:
         with open(args.ofile, 'w') as fo:
             json.dump(res, fo)
