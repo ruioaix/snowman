@@ -30,3 +30,4 @@ log_configuration = {
 def init(level):
     logging.config.dictConfig(log_configuration)
     logging.getLogger().setLevel(level)
+    logging.getLogger('urllib3').setLevel(logging.WARNING)

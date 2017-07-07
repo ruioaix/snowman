@@ -2,11 +2,14 @@
 """
 import re
 import json
-import copy
+import logging
 
 from .headers import default_headers
 from .urls import urls
 from .session import Session
+from .exceptions import JsonLoadError, WrongStatusCode, AnalysisContentError
+
+log = logging.getLogger(__name__)
 
 class Analysis(object):
 
@@ -28,11 +31,15 @@ class Analysis(object):
 
     def _update(self, _url, **kwargs):
         self.s.touch()
-        resp = self.s.get(_url(self.symbol, **kwargs))
+        url = _url(self.symbol, **kwargs)
+        log.debug('request ' + url)
+        resp = self.s.get(url)
+        if resp.status_code != 200:
+            raise WrongStatusCode(resp.status_code)
         try:
             data = json.loads(resp.text)
         except json.decoder.JSONDecodeError:
-            raise Exception('Json loads error: {}'.format(resp.text[:50]))
+            raise JsonLoadError('"{}..."'.format(resp.text[:50]))
         return data
 
     def benefit(self, origin = False, update = False):
@@ -42,9 +49,11 @@ class Analysis(object):
         if origin:
             return self.benefit_origin
         if self.benefit_simple is None:
-            self.benefit_simple = [(int(re.sub('-', '', month['date'])), month['value']) for month in self.benefit_origin[0]['profit_list']]
+            try: 
+                self.benefit_simple = [(int(re.sub('-', '', month['date'])), month['value']) for month in self.benefit_origin[0]['profit_list']]
+            except KeyError as e:
+                raise AnalysisContentError(str(e))
         return self.benefit_simple
-
 
     def max_draw(self, origin = False, update = False):
         if update or self.max_draw_origin is None:
@@ -53,11 +62,13 @@ class Analysis(object):
         if origin:
             return self.max_draw_origin
         if self.max_draw_simple is None:
-            self.max_draw_simple = {}
-            self.max_draw_simple['begin_date'] = self.max_draw_origin['begin_date']
-            self.max_draw_simple['end_date'] = self.max_draw_origin['end_date']
-            self.max_draw_simple['value'] = self.max_draw_origin['max_draw']
-            return self.max_draw_simple
+            try:
+                self.max_draw_simple = {}
+                self.max_draw_simple['begin_date'] = self.max_draw_origin['begin_date']
+                self.max_draw_simple['end_date'] = self.max_draw_origin['end_date']
+                self.max_draw_simple['value'] = self.max_draw_origin['max_draw']
+            except KeyError as e:
+                raise AnalysisContentError(str(e))
         return self.max_draw_simple
 
     def turnover(self, origin = False, update = False):
@@ -67,7 +78,10 @@ class Analysis(object):
         if origin:
             return self.turnover_origin
         if self.turnover_simple is None:
-            self.turnover_simple = self.turnover_origin['values'][0]['value']
+            try:
+                self.turnover_simple = self.turnover_origin['values'][0]['value']
+            except KeyError as e:
+                raise AnalysisContentError(str(e))
         return self.turnover_simple
 
     def liquidity(self, origin = False, update = False):
@@ -77,7 +91,10 @@ class Analysis(object):
         if origin:
             return self.liquidity_origin
         if self.liquidity_simple is None:
-            self.liquidity_simple = self.liquidity_origin['values'][0]['value']
+            try: 
+                self.liquidity_simple = self.liquidity_origin['values'][0]['value']
+            except KeyError as e:
+                raise AnalysisContentError(str(e))
         return self.liquidity_simple
 
     def volatility(self, origin = False, update = False):
@@ -87,7 +104,10 @@ class Analysis(object):
         if origin:
             return self.volatility_origin
         if self.volatility_simple is None:
-            self.volatility_simple = self.volatility_origin['volatility_rate']
+            try:
+                self.volatility_simple = self.volatility_origin['volatility_rate']
+            except KeyError as e:
+                raise AnalysisContentError(str(e))
         return self.volatility_simple
 
     def top_stocks(self, page = 1, count = 5, origin = False, update = False):
@@ -97,12 +117,15 @@ class Analysis(object):
         if origin:
             return self.top_stocks_origin
         if self.top_stocks_simple is None:
-            self.top_stocks_simple = [{
-                'symbol': st['stock_symbol'], 
-                'name': st['stock_name'], 
-                'benefit': st['stock_benefit'], 
-                'holding_duration': st['holding_duration']} 
-                                      for st in self.top_stocks_origin['stock_list']]
+            try:
+                self.top_stocks_simple = [{
+                    'symbol': st['stock_symbol'], 
+                    'name': st['stock_name'], 
+                    'benefit': st['stock_benefit'], 
+                    'holding_duration': st['holding_duration']} 
+                                          for st in self.top_stocks_origin['stock_list']]
+            except KeyError as e:
+                raise AnalysisContentError(str(e))
         return self.top_stocks_simple
 
     def all(self, origin):
@@ -113,4 +136,3 @@ class Analysis(object):
                 'max_draw': self.max_draw(origin = origin),
                 'top_stocks': self.top_stocks(origin = origin),
                 }
-

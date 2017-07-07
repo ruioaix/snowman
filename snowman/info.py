@@ -2,11 +2,14 @@
 """
 import re
 import json
+import logging
 import datetime
 
 from .urls import urls
 from .session import Session
 from .exceptions import WrongStatusCode, InfoContentError, JsonLoadError
+
+log = logging.getLogger(__name__)
 
 class Info(object):
 
@@ -22,16 +25,19 @@ class Info(object):
         raise AttributeError("'{}' object has no attribut '{}'".format(Info.__name__, name))
 
     def _update(self):
-        resp = self.s.get(urls.info(self.symbol))
+        url = urls.info(self.symbol)
+        log.debug("request " + url)
+        resp = self.s.get(url)
         if resp.status_code != 200:
             raise WrongStatusCode("Info gets {} http status code.".format(resp.status_code))
         cubeinfo = re.search(r'(?<=SNB.cubeInfo = ).*(?=;[\s]SNB.cubePieData)', resp.text)
         if cubeinfo is None: 
             raise InfoContentError("Info can not be found from url: '{}'".format(urls.info(self.symbol)))
         try:
-            data = json.loads(cubeinfo.group())
+            text = cubeinfo.group()
+            data = json.loads(text)
         except json.decoder.JSONDecodeError:
-            raise JsonLoadError('Info')
+            raise JsonLoadError('"{}..."'.format(text[:50]))
         return data
 
     def get(self, origin = False, update = False):
@@ -89,3 +95,4 @@ class Info(object):
                         for stk in self._info['view_rebalancing']['holdings']]
         except KeyError as e:
             raise InfoContentError(str(e))
+        return holdings
