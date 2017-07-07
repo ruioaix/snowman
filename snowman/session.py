@@ -34,7 +34,7 @@ class Session(requests.Session):
             data = {'areacode': 86, 'telephone': username, 'password': password, 'remember_me': 'on'}
         else:
             data = {'username': username, 'password': password}
-        log.debug('login ' + urls.login)
+        log.debug('login with ' + username + ' via ' + urls.login)
         resp = self.post(urls.login, data = data)
         if not self.is_login():
             raise LoginError('http code: {}'.format(resp.status_code))
