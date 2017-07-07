@@ -105,12 +105,12 @@ class Analysis(object):
                                       for st in self.top_stocks_origin['stock_list']]
         return self.top_stocks_simple
 
-    def all(self):
-        return {'benefit': self.benefit(),
-                'turnover': self.turnover(),
-                'liquidity': self.liquidity(),
-                'volatility': self.volatility(),
-                'max_draw': self.max_draw(),
-                'top_stocks': self.top_stocks(),
+    def all(self, origin):
+        return {'benefit': self.benefit(origin = origin),
+                'turnover': self.turnover(origin = origin),
+                'liquidity': self.liquidity(origin = origin),
+                'volatility': self.volatility(origin = origin),
+                'max_draw': self.max_draw(origin = origin),
+                'top_stocks': self.top_stocks(origin = origin),
                 }
 

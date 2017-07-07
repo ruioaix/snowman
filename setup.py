@@ -24,4 +24,9 @@ setup(
     ],
     packages = ['snowman'],
     install_requires = ['requests'],
+    entry_points = {
+        'console_scripts': [
+            'snowman = snowman:main',
+        ]
+    }
 )
