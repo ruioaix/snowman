@@ -2,11 +2,15 @@
 """
 import re
 import hashlib
+import logging
 import requests
 from requests.cookies import RequestsCookieJar
 
 from .urls import urls
 from .headers import default_headers
+from .exceptions import LoginError
+
+log = logging.getLogger(__name__)
 
 class Session(requests.Session):
 
@@ -16,6 +20,7 @@ class Session(requests.Session):
 
     def touch(self):
         if 'xq_a_token' not in self.cookies:
+            log.debug('touch ' + urls.base)
             self.get(urls.base)
 
     def is_login(self):
@@ -29,7 +34,7 @@ class Session(requests.Session):
             data = {'areacode': 86, 'telephone': username, 'password': password, 'remember_me': 'on'}
         else:
             data = {'username': username, 'password': password}
-        self.post(urls.login, data = data)
+        log.debug('login ' + urls.login)
+        resp = self.post(urls.login, data = data)
         if not self.is_login():
-            raise Exception('login fail')
-        
+            raise LoginError('http code: {}'.format(resp.status_code))
