@@ -14,50 +14,50 @@ class Snowman(object):
     def login(self, username, password):
         self.s.login(username, password)
     
-    def get_info(self, symbol, origin = False):
+    def info(self, symbol, origin = False):
         i = Info(symbol, self.s)
         return i.get(origin)
 
-    def get_owner(self, symbol, origin = False):
+    def owner(self, symbol, origin = False):
         i = Info(symbol, self.s)
         return i.owner(origin)
 
-    def get_holdings(self, symbol, origin = False):
+    def holdings(self, symbol, origin = False):
         i = Info(symbol, self.s)
         return i.holdings(origin)
 
-    def get_profit(self, symbol, days = 0, origin = False):
+    def profit(self, symbol, days = 0, origin = False):
         p = Profit(symbol, self.s)
         return p.get(days = days, origin = origin)
 
-    def get_analysis_benefit(self, symbol, origin = False):
+    def benefit(self, symbol, origin = False):
         a = Analysis(symbol, self.s)
         return a.benefit(origin)
 
-    def get_analysis_max_draw(self, symbol, origin = False):
+    def maxdraw(self, symbol, origin = False):
         a = Analysis(symbol, self.s)
         return a.max_draw(origin)
 
-    def get_analysis_turnover(self, symbol, origin = False):
+    def turnover(self, symbol, origin = False):
         a = Analysis(symbol, self.s)
         return a.turnover(origin)
 
-    def get_analysis_liquidity(self, symbol, origin = False):
+    def liquidity(self, symbol, origin = False):
         a = Analysis(symbol, self.s)
         return a.liquidity(origin)
 
-    def get_analysis_volatility(self, symbol, origin = False):
+    def volatility(self, symbol, origin = False):
         a = Analysis(symbol, self.s)
         return a.volatility(origin)
 
-    def get_analysis_top_stocks(self, symbol, page = 1, count = 5, origin = False):
+    def topstocks(self, symbol, page = 1, count = 5, origin = False):
         a = Analysis(symbol, self.s)
         return a.top_stocks(page = page, count = count, origin = origin)
 
-    def get_analysis(self, symbol, origin = False):
+    def analysis(self, symbol, origin = False):
         a = Analysis(symbol, self.s)
         return a.all(origin)
 
-    def get_history(self, symbol, history_num = 0, origin = False):
+    def history(self, symbol, history_num = 0, origin = False):
         h = History(symbol, self.s)
         return h.get(history_num, origin)
