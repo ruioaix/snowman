@@ -5,3 +5,4 @@ __pycache__
 run.py
 *.swp
 1
+dist/
