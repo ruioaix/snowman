@@ -67,6 +67,24 @@ def main():
                 page = int(args.params[0])
                 count = int(args.params[1])
         res = verb(args.object, page = page, count = count, origin = args.origin)
+    elif verb == man.history:
+        history_num = 0
+        page = 1
+        count = 20
+        if args.params and args.params[0].isdigit():
+            if len(args.params) == 1:
+                history_num = int(args.params[0])
+            elif args.params[1].isdigit():
+                if len(args.params) == 2:
+                    page = int(args.params[0])
+                    count = int(args.params[1])
+                    history_num = -1
+                elif args.params[2].isdigit():
+                    history_num = int(args.params[0])
+                    page = int(args.params[1])
+                    count = int(args.params[2])
+        res = verb(args.object, history_num = history_num, 
+                   page = page, count = count, origin = args.origin)
     else:
         res = verb(args.object, origin = args.origin)
     if args.ofile:

@@ -58,6 +58,6 @@ class Snowman(object):
         a = Analysis(symbol, self.s)
         return a.all(origin)
 
-    def history(self, symbol, history_num = 0, origin = False):
+    def history(self, symbol, history_num = 0, page = 1, count = 20, origin = False):
         h = History(symbol, self.s)
-        return h.get(history_num, origin)
+        return h.get(history_num = history_num, page = page, count = count, origin = origin)

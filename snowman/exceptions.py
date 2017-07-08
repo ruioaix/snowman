@@ -24,3 +24,6 @@ class AnalysisContentError(SnowmanBaseException):
 
 class ProfitContentError(SnowmanBaseException):
     """"""
+
+class HistoryContentError(SnowmanBaseException):
+    """"""
