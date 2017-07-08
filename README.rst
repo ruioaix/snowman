@@ -37,6 +37,7 @@ Feature Support
 Snowman supports Python 3.3-3.7.
 
 Snowman supports following query functionalities:
+
 - basic information, including name, owner, creation date, current holding and so on.
 - analysis data, including turnover, liquidity and so on.
 - profit history
