@@ -34,7 +34,7 @@ Snowman allows you to get most of the information of the portfolios on `xueqiu.c
 Feature Support
 ---------------
 
-Snowman supports Python 3.3-3.7.
+Snowman supports Python 3.3-3.6.
 
 Snowman supports following query functionalities:
 

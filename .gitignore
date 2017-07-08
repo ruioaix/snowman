@@ -6,3 +6,4 @@ run.py
 *.swp
 1
 dist/
+build/
