@@ -5,6 +5,11 @@
 
 __version__ = '0.0.1'
 
+from .info import Info
+from .profit import Profit
+from .analysis import Analysis
+from .history import History
+
 import logging
 # Set default logging handler to avoid "No handler found" warnings.
 try:  # Python 2.7+
