@@ -28,7 +28,7 @@ class Analysis(object):
     >>> ana = Analysis('ZH123456')
     >>> ana.benefit() # return benefit analysis data
     >>> ana.turnover() # return turnover analysis data
-    ...
+    >>> ...
     
     """
 
