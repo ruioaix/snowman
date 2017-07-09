@@ -55,6 +55,8 @@ To install Snowman, simply
 Documentation
 -------------
 
+Documentation is available at http://snowman.readthedocs.io
+
 TODO
 ----
 
