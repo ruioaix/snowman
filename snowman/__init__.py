@@ -1,9 +1,9 @@
 """
 
 """
+from __future__ import print_function
 
-
-__version__ = '0.1.0'
+from .version import __version__
 
 from .info import Info
 from .profit import Profit
@@ -59,10 +59,10 @@ def main():
         return
     log.info('Snowman is on.') 
     if verb == man.profit:
-        days = 0
+        num = 0
         if args.params and args.params[0].isdigit():
-            days = int(args.params[0])
-        res = verb(args.object, days = days, origin = args.origin)
+            num = int(args.params[0])
+        res = verb(args.object, num = num, origin = args.origin)
     elif verb == man.topstocks:
         page = 1
         count = 5
@@ -74,22 +74,22 @@ def main():
                 count = int(args.params[1])
         res = verb(args.object, page = page, count = count, origin = args.origin)
     elif verb == man.history:
-        history_num = 0
+        num = 0
         page = 1
         count = 20
         if args.params and args.params[0].isdigit():
             if len(args.params) == 1:
-                history_num = int(args.params[0])
+                num = int(args.params[0])
             elif args.params[1].isdigit():
                 if len(args.params) == 2:
                     page = int(args.params[0])
                     count = int(args.params[1])
-                    history_num = -1
+                    num = -1
                 elif args.params[2].isdigit():
-                    history_num = int(args.params[0])
+                    num = int(args.params[0])
                     page = int(args.params[1])
                     count = int(args.params[2])
-        res = verb(args.object, history_num = history_num, 
+        res = verb(args.object, num = num, 
                    page = page, count = count, origin = args.origin)
     else:
         res = verb(args.object, origin = args.origin)

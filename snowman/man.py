@@ -26,9 +26,9 @@ class Snowman(object):
         i = Info(symbol, self.s)
         return i.holdings(origin)
 
-    def profit(self, symbol, days = 0, origin = False):
+    def profit(self, symbol, num = 0, origin = False):
         p = Profit(symbol, self.s)
-        return p.get(days = days, origin = origin)
+        return p.get(num = num, origin = origin)
 
     def benefit(self, symbol, origin = False):
         a = Analysis(symbol, self.s)
@@ -58,6 +58,6 @@ class Snowman(object):
         a = Analysis(symbol, self.s)
         return a.all(origin)
 
-    def history(self, symbol, history_num = 0, page = 1, count = 20, origin = False):
+    def history(self, symbol, num = 0, page = 1, count = 20, origin = False):
         h = History(symbol, self.s)
-        return h.get(history_num = history_num, page = page, count = count, origin = origin)
+        return h.get(num = num, page = page, count = count, origin = origin)
