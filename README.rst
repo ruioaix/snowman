@@ -1,6 +1,10 @@
 Snowman: Play Snowball
 ======================
 
+.. image:: https://readthedocs.org/projects/snowman/badge/?version=latest
+    :target: http://snowman.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
 Snowman is an interactive system for portfolios on xueqiu.com, including a library and a simple command line tool.
 
 Simple example of Snowman tool:
