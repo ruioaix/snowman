@@ -5,6 +5,14 @@ Snowman: Play Snowball
     :target: http://snowman.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
+.. image:: https://img.shields.io/pypi/v/snowman.svg
+    :target: https://pypi.python.org/pypi/snowman
+    :alt: PyPI: the Python Package Index
+
+.. image:: https://img.shields.io/travis/ruioaix/snowman/master.svg
+    :target: https://travis-ci.org/ruioaix/snowman
+    :alt: Travis CI: continuous integration status
+
 Snowman is an interactive system for portfolios on xueqiu.com, including a library and a simple command line tool.
 
 Simple example of Snowman tool:
