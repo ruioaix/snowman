@@ -13,6 +13,12 @@ Snowman: Play Snowball
     :target: https://travis-ci.org/ruioaix/snowman
     :alt: Travis CI: continuous integration status
 
+.. image:: https://img.shields.io/pypi/l/snowman.svg
+    :target: https://pypi.python.org/pypi/snowman
+
+.. image:: https://img.shields.io/pypi/pyversions/snowman.svg
+    :target: https://pypi.python.org/pypi/snowman
+
 Snowman is an interactive system for portfolios on xueqiu.com, including a library and a simple command line tool.
 
 Simple example of Snowman tool:
