@@ -47,6 +47,7 @@ from .log import init
 import json
 
 def main():
+    """ main of snowman """
     args = parse_arguments()
     init(args.verbosity)
     log = logging.getLogger(__name__)
